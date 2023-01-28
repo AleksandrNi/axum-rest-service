@@ -6,5 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bootstrap = {path = "./src/bootstrap"}
+api = { path = "src/api" }
+utils = { path ="src/utils" }
+repository = { path = "src/repository" }
+web = { path = "src/web"}
 tokio = { version = "1.23.1", features = ["macros", "rt-multi-thread"] }
+dotenv = "0.15.0"
+tracing = "0.1.37"

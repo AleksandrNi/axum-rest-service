@@ -1,23 +1,8 @@
 use core::panic;
-use api::db::index::Db;
-
-
-pub struct HealthCheck {
-    db: Db
-}
-
-impl HealthCheck {
-    pub fn new(db: Db) -> Self {
-        Self{db}
-    }
-}
-
-impl HealthCheck {
-    pub async fn check (&self) -> Result<(),()> {
-        println!("health check");
-
-        let pool = self.db.0.clone();
-
+use utils::core::db::get_connection;
+use tracing::info;
+pub async fn run () {
+        let pool = get_connection().await;
         let result = pool.try_acquire()
             .map(|_| ())
             .ok_or_else(|| panic!("Failed to connect database `postgres`."))
@@ -29,10 +14,6 @@ impl HealthCheck {
             .await
             .unwrap_or_else(|_| panic!("Failed to to execute query. Database `postgres`."));
 
-        println!("!!! >>>>>>>> {:?}", result);
-        println!("row = {:?}", row);
         assert_eq!(row.0, 150);
-
-        Ok(())
-    }
+        info!("executed: test db connection");
 }

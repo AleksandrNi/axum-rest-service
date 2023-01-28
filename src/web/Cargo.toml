@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+utils = { path = "../utils" }
 axum = { version = "0.6.2", features = ["headers", "macros"] }
 chrono = "0.4.23"
 serde = { version = "1.0.152", features = ["derive"] }

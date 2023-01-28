@@ -1,21 +1,9 @@
-use std::net::IpAddr;
-use std::net::SocketAddr;
-use axum::Router;
 use std::env;
+use std::net::IpAddr;
+use tracing::{info};
 
-pub async fn run () {
-    let app = Router::new();
 
-    let addr = SocketAddr::from(get_addr());
-    tracing::info!("Server listening on {}", addr);
-
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
-        .await
-        .unwrap_or_else(|_| panic!("Server cannot launch."));
-}
-
-fn get_addr() -> (IpAddr, u16) {
+pub fn get_address() -> (IpAddr, u16) {
     let env_host = env::var_os("HOST").expect("HOST is undefined.");
     let ip_addr = env_host
         .into_string()
@@ -30,6 +18,6 @@ fn get_addr() -> (IpAddr, u16) {
         .parse::<u16>()
         .expect("PORT is invalid.");
 
-    tracing::debug!("Init ip address.");
+    info!("executed: initializing server url");
     (ip_addr, port)
 }
