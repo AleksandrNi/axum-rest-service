@@ -1,4 +1,4 @@
-use sqlx::{Pool, Postgres};
+use sqlx::{Pool, Postgres, Transaction};
 use sqlx::postgres::PgPoolOptions;
 use tokio::sync::OnceCell;
 use std::env;
@@ -16,9 +16,18 @@ async fn init_connection() -> Pool<Postgres> {
     info!("executed: initializing db connection");
     pool
 }
-
 static CONN: OnceCell<Pool<Postgres>> = OnceCell::const_new();
 
 pub async fn get_connection() -> &'static Pool<Postgres> {
     CONN.get_or_init(init_connection).await
+}
+
+pub async fn get_transaction() -> Transaction<'static, Postgres> {
+    get_connection().await
+        .begin().await
+        .expect("Unable to begin transaction")
+}
+pub async fn commit_transaction(tx: Transaction<'static, Postgres>) {
+    tx.commit()
+        .await.expect("Unable to commit the transaction");
 }

@@ -10,6 +10,7 @@ async fn main() -> Result<(), ()> {
     logger::run().await;
     info!("server is running up ...");
     db::health_check::run().await;
+    db::migrations::run().await;
     web::server::run().await;
     Ok(())
 }

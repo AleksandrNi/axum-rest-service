@@ -9,6 +9,9 @@ edition = "2021"
 api = { path = "../api" }
 tokio = { version = "1.23.1", features = ["full"]}
 sqlx = { version = "0.6.2", features = ["runtime-tokio-rustls", "postgres", "chrono", "uuid", "json"] }
+axum = { version = "0.6.2", features = ["headers", "macros"] }
+jsonwebtoken = "8.2.0"
 serde = { version = "1.0.152", features = ["derive"] }
 tracing = "0.1.37"
 tracing-subscriber = { version = "0.3.15"}
+chrono = "0.4.23"

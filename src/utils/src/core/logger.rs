@@ -1,4 +1,4 @@
-use tracing::{info, Level};
+use tracing::{Level};
 use tracing_subscriber::FmtSubscriber;
 
 pub async fn run () {
