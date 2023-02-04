@@ -1,23 +1,21 @@
-use sqlx::Row;
-use sqlx::postgres::PgRow;
+use serde::{Deserialize, Serialize};
 use crate::domain::from_pg_row::FromPgRow;
+use sqlx::postgres::PgRow;
+use sqlx::Row;
 
+#[derive(Serialize,Deserialize)]
 pub struct Question {
     id: QuestionId,
     title: String,
     content: String,
     tags: Option<Vec<String>>,
 }
-pub struct QuestionId(String);
 
+#[derive(Serialize, Deserialize)]
+pub struct QuestionId(i32);
 
 impl Question {
-    pub fn new(
-        id: QuestionId,
-        title: String,
-        content: String,
-        tags: Option<Vec<String>>
-    ) -> Self {
+    pub fn new(id: QuestionId, title: String, content: String, tags: Option<Vec<String>>) -> Self {
         Question {
             id,
             title,
@@ -33,7 +31,7 @@ impl FromPgRow for Question {
             QuestionId(row.get("id")),
             row.get("title"),
             row.get("content"),
-            row.get("tags")
+            row.get("tags"),
         )
     }
 }

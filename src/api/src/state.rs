@@ -7,5 +7,5 @@ pub struct ContextUser {
 }
 
 pub struct Context {
-    pub user: Option<ContextUser>
+    pub user: Option<ContextUser>,
 }

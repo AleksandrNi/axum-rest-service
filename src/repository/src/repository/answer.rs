@@ -1,3 +1,1 @@
-pub async fn get_answers() {
-
-}
+pub async fn get_answers() {}

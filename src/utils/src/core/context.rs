@@ -6,7 +6,5 @@ struct StateUser {
 }
 
 async fn create_context() -> Context {
-    Context {
-        user: None,
-    }
+    Context { user: None }
 }

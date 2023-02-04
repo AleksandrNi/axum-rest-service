@@ -1,18 +1,20 @@
-use sqlx::{Pool, Postgres, Transaction};
+use async_trait::async_trait;
 use sqlx::postgres::PgPoolOptions;
-use tokio::sync::OnceCell;
+use sqlx::{Pool, Postgres, Transaction};
 use std::env;
+use tokio::sync::OnceCell;
 use tracing::info;
 
 async fn init_connection() -> Pool<Postgres> {
-    let db_url = env::var("DATABASE_URL")
-        .unwrap_or_else(|_| panic!("DATABASE_URL must be set!"));
+    let db_url = env::var("DATABASE_URL").unwrap_or_else(|_| panic!("DATABASE_URL must be set!"));
 
     let pool = PgPoolOptions::new()
         .max_connections(5)
         .connect(&db_url)
         .await
-        .unwrap_or_else(|_| panic!("Cannot connect to the database. Please check your configuration."));
+        .unwrap_or_else(|_| {
+            panic!("Cannot connect to the database. Please check your configuration.")
+        });
     info!("executed: initializing db connection");
     health_check(&pool).await;
     pool
@@ -29,19 +31,38 @@ async fn health_check(pool: &Pool<Postgres>) {
     info!("executed: test db connection");
 }
 
-
 static CONN: OnceCell<Pool<Postgres>> = OnceCell::const_new();
 
 pub async fn get_connection() -> &'static Pool<Postgres> {
     CONN.get_or_init(init_connection).await
 }
 
-pub async fn get_transaction() -> Transaction<'static, Postgres> {
-    get_connection().await
-        .begin().await
-        .expect("Unable to begin transaction")
+#[async_trait]
+pub trait TxAsync {
+    async fn begin() -> Transaction<'static, Postgres>;
+    async fn commit(tx: Transaction<'static, Postgres>);
 }
-pub async fn commit_transaction(tx: Transaction<'static, Postgres>) {
-    tx.commit()
-        .await.expect("Unable to commit the transaction");
+
+pub struct Tx;
+
+#[async_trait]
+impl TxAsync for Tx {
+    async fn begin() -> Transaction<'static, Postgres> {
+        get_connection()
+            .await
+            .begin()
+            .await
+            .expect("Unable to begin transaction")
+    }
+
+    async fn commit(tx: Transaction<'static, Postgres>) {
+        tx.commit().await.expect("Unable to commit the transaction");
+    }
 }
+
+// pub async fn begin_transaction() -> Transaction<'static, Postgres> {
+//
+// }
+// pub async fn commit_transaction(tx: Transaction<'static, Postgres>) {
+//
+// }

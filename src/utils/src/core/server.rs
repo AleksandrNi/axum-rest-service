@@ -1,7 +1,7 @@
 use std::env;
 use std::net::IpAddr;
-use tracing::{info};
-
+use tracing::info;
+use tracing_subscriber::fmt::format;
 
 pub fn get_address() -> (IpAddr, u16) {
     let env_host = env::var_os("HOST").expect("HOST is undefined.");
@@ -17,7 +17,7 @@ pub fn get_address() -> (IpAddr, u16) {
         .expect("PORT is invalid.")
         .parse::<u16>()
         .expect("PORT is invalid.");
-
-    info!("executed: initializing server url");
+    let url_message = format!("executed: initializing server url = {}:{}", &ip_addr, &port);
+    info!(url_message);
     (ip_addr, port)
 }

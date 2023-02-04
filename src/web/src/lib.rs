@@ -1,2 +1,3 @@
-pub mod server;
 mod middlewares;
+pub mod server;
+mod routes;

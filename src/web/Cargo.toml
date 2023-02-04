@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 utils = { path = "../utils" }
 service = {path = "../service"}
+repository = { path = "../repository" }
 axum = { version = "0.6.2", features = ["headers", "macros"] }
 chrono = "0.4.23"
 serde = { version = "1.0.152", features = ["derive"] }
@@ -20,4 +21,5 @@ serde_with = "2.2.0"
 bcrypt = "0.13.0"
 tracing = "0.1.37"
 jsonwebtoken = "8.2.0"
+serde_json = "1.0.91"
 

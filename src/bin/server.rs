@@ -1,8 +1,8 @@
 use dotenv::dotenv;
-use web;
-use utils::core::{logger};
 use repository::migrations;
 use tracing::info;
+use utils::core::logger;
+use web;
 
 #[tokio::main]
 async fn main() -> Result<(), ()> {
