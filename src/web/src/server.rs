@@ -11,8 +11,8 @@ pub async fn run() {
     let app =
         Router::new()
             .route("/", get(get_hello))
-        .merge(routes::question::routes::router().await);
-    // .route_layer(middleware::from_fn(auth::guard));
+            .merge(routes::question::routes::router().await);
+            // .route_layer(middleware::from_fn(auth::guard));
 
     let adress = SocketAddr::from(get_address());
 
@@ -22,6 +22,6 @@ pub async fn run() {
         .unwrap_or_else(|_| panic!("Server cannot launch."));
 }
 
-pub async fn get_hello () -> Result<String, StatusCode> {
+pub async fn get_hello() -> Result<String, StatusCode> {
     Ok("hello world".to_owned())
 }

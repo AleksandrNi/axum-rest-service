@@ -1,46 +1,36 @@
-use utils::error::app_repository_error::AppRepositoryError;
-use utils::error::app_service_error::AppServiceError;
-use utils::error::app_web_error::AppWebError;
 use utils::error::app_error::{AppErrorData, AppGenericError};
 use axum::{http::StatusCode, response::{IntoResponse, Response}, Json};
 use serde::Serialize;
 
-#[derive(Debug)]
-pub enum AppError {
-    Repository(AppRepositoryError),
-    Service(AppServiceError),
+#[derive(Serialize, Debug)]
+pub struct AppResponseError {
+    pub code: &'static str,
+    pub message: String,
+    // Repository(AppRepositoryError),
+    // Service(AppServiceError),
     // Web(AppWebError),
 }
 
-#[derive(Serialize)]
-pub struct AppErrorBody {
-    pub code: String,
-    pub message: String,
+impl AppResponseError {
+    pub fn new(code: &'static str, message: &str) -> Self {
+        AppResponseError {code, message: message.to_owned()}
+    }
 }
 
-impl IntoResponse for AppError {
+impl IntoResponse for AppResponseError {
     fn into_response(self) -> Response {
-        let (status, code, message) = match self {
-            AppError::Repository(err) => (StatusCode::INTERNAL_SERVER_ERROR, err.get_code(), err.get_message().to_owned()),
-            AppError::Service(err) => (StatusCode::INTERNAL_SERVER_ERROR, err.get_code(), err.get_message().to_owned()),
-            // AppError::Web(err) => (StatusCode::INTERNAL_SERVER_ERROR, err.get_code(), err.get_message().to_owned()),
-        };
-        (
-            status,
-            Json(AppErrorBody {
-                code: code.to_string(),
-                message: message,
-            })
+        (StatusCode::INTERNAL_SERVER_ERROR,
+         Json(self)
         ).into_response() as Response
     }
 }
 
-pub fn prepareResponse<T>(result: Result<T,AppGenericError>) -> Result<Json<T>, AppError> {
-    match  result {
+pub fn prepare_response<T>(result: Result<T, AppGenericError>) -> Result<Json<T>, AppResponseError> {
+    match result {
         Ok(data) => Ok(Json(data)),
         Err(err) => match err {
-            AppGenericError::Repository(e) => Err(AppError::Repository(e)),
-            AppGenericError::Service(e) => Err(AppError::Service(e))
+            AppGenericError::Repository(e) => Err(AppResponseError::new(e.get_code(), e.get_message())),
+            AppGenericError::Service(e) => Err(AppResponseError::new(e.get_code(), e.get_message()))
         }
     }
 }
