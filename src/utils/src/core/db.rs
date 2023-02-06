@@ -59,10 +59,3 @@ impl TxAsync for Tx {
         tx.commit().await.expect("Unable to commit the transaction");
     }
 }
-
-// pub async fn begin_transaction() -> Transaction<'static, Postgres> {
-//
-// }
-// pub async fn commit_transaction(tx: Transaction<'static, Postgres>) {
-//
-// }
