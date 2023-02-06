@@ -1,7 +1,7 @@
 use utils::error::app_repository_error::AppRepositoryError;
 use utils::error::app_service_error::AppServiceError;
 use utils::error::app_web_error::AppWebError;
-use utils::error::app_error::AppErrorData;
+use utils::error::app_error::{AppErrorData, AppGenericError};
 use axum::{http::StatusCode, response::{IntoResponse, Response}, Json};
 use serde::Serialize;
 
@@ -32,5 +32,15 @@ impl IntoResponse for AppError {
                 message: message,
             })
         ).into_response() as Response
+    }
+}
+
+pub fn prepareResponse<T>(result: Result<T,AppGenericError>) -> Result<Json<T>, AppError> {
+    match  result {
+        Ok(data) => Ok(Json(data)),
+        Err(err) => match err {
+            AppGenericError::Repository(e) => Err(AppError::Repository(e)),
+            AppGenericError::Service(e) => Err(AppError::Service(e))
+        }
     }
 }

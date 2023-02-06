@@ -16,6 +16,13 @@ pub trait AppErrorData<'a> {
     fn get_code(&self) -> &'static str;
 }
 
+#[derive(Debug)]
+pub enum AppGenericError {
+    Repository(AppRepositoryError),
+    Service(AppServiceError),
+    // Web(AppWebError)
+}
+
 
 
 // pub enum AppError {
