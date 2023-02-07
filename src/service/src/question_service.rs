@@ -6,37 +6,37 @@ use utils::error::app_error::AppGenericError;
 use utils::error::app_repository_error::AppRepositoryError;
 use utils::error::app_service_error::AppServiceError;
 
-pub async fn get_questions() -> Result<Vec<Question>, AppGenericError> {
+pub async fn get_questions() -> Result<Vec<Question>, Box<dyn AppGenericError>> {
     let mut tx = Tx::begin().await;
     match question_repository::get_questions(&mut tx).await {
         Ok(data) => {
             Tx::commit(tx);
             Ok(data)
         }
-        Err(err) => Err(err)
+        Err(boxErr) => Err(boxErr)
     }
 }
 
-pub async fn post_question(question: Question) -> Result<Question, AppGenericError> {
+pub async fn post_question(question: Question) -> Result<Question, Box<dyn AppGenericError>> {
     let mut tx = Tx::begin().await;
     match question_repository::post_question(&mut tx, question).await {
         Ok(data) => {
             Tx::commit(tx);
             Ok(data)
         }
-        Err(err) => Err(err)
+        Err(boxErr) => Err(boxErr)
     }
 }
 
 pub async fn get_question_by_id(
     id: i32
-) -> Result<Question, AppGenericError> {
+) -> Result<Question, Box<dyn AppGenericError>> {
     let mut tx = Tx::begin().await;
     match question_repository::get_question_by_id(&mut tx, id).await {
         Ok(data) => {
             Tx::commit(tx);
             Ok(data)
         },
-        Err(err) => Err(err)
+        Err(boxErr) => Err(boxErr)
     }
 }

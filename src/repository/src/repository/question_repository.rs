@@ -16,7 +16,7 @@ const QUERY_CREATE_QUESTION: &str =
 const QUERY_SELECT_QUESTION: &str =
     "SELECT * FROM questions WHERE id = $1";
 
-pub async fn get_questions(tx: &mut Transaction<'static, Postgres>) -> Result<Vec<Question>, AppGenericError> {
+pub async fn get_questions(tx: &mut Transaction<'static, Postgres>) -> Result<Vec<Question>, Box<dyn AppGenericError>> {
     let connection = get_connection().await;
     let limit = 100;
     let offset = 0;
@@ -29,16 +29,14 @@ pub async fn get_questions(tx: &mut Transaction<'static, Postgres>) -> Result<Ve
         .await {
         Ok(data) => Ok(data),
         Err(err) => Err(
-            AppGenericError::Repository(
-                AppRepositoryError::general_error(&err.to_string()[..])
-            )
+            AppRepositoryError::general_error(&err.to_string()[..])
         )
     }
 }
 
 
 pub async fn post_question(
-    tx: &mut Transaction<'static, Postgres>, question: Question) -> Result<Question, AppGenericError> {
+    tx: &mut Transaction<'static, Postgres>, question: Question) -> Result<Question, Box<dyn AppGenericError>> {
     let connection = get_connection().await;
 
     match sqlx::query(QUERY_CREATE_QUESTION)
@@ -51,14 +49,12 @@ pub async fn post_question(
         .await {
         Ok(data) => Ok(data),
         Err(err) => Err(
-            AppGenericError::Repository(
-                AppRepositoryError::general_error(&err.to_string()[..])
-            )
+            AppRepositoryError::general_error(&err.to_string()[..])
         )
     }
 }
 
-pub async fn get_question_by_id(tx: &mut Transaction<'static, Postgres>, id: i32) -> Result<Question, AppGenericError> {
+pub async fn get_question_by_id(tx: &mut Transaction<'static, Postgres>, id: i32) -> Result<Question, Box<dyn AppGenericError>> {
     let connection = get_connection().await;
 
     match sqlx::query(QUERY_SELECT_QUESTION)
@@ -69,9 +65,7 @@ pub async fn get_question_by_id(tx: &mut Transaction<'static, Postgres>, id: i32
         .await {
         Ok(data) => Ok(data),
         Err(err) => Err(
-            AppGenericError::Repository(
-                AppRepositoryError::general_error(&err.to_string()[..])
-            )
+            AppRepositoryError::general_error(&err.to_string()[..])
         )
     }
 }

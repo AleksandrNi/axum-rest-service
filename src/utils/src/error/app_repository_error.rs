@@ -1,4 +1,5 @@
-use crate::error::app_error::AppErrorData;
+use crate::error::app_error::AppGenericError;
+
 
 const WEB_REPOSITORY_001: &str = "appRepositoryError001";
 const WEB_REPOSITORY_002: &str = "appRepositoryError002";
@@ -11,19 +12,19 @@ pub struct AppRepositoryError  {
 }
 
 impl AppRepositoryError {
-    pub fn general_error(err: &str) -> Self {
-        AppRepositoryError { message: format!("General error occured: {}", err), code: "appRepositoryError001" }
+    pub fn general_error(err: &str) -> Box<Self> {
+        Box::new(AppRepositoryError { message: format!("General error occured: {}", err), code: "appRepositoryError001" })
     }
-    pub fn general_error_for_param(param: &str) -> Self {
-        AppRepositoryError { message: format!("General error occured for param: {}", param), code: "appRepositoryError002" }
+    pub fn general_error_for_param(param: &str) -> Box<Self> {
+        Box::new(AppRepositoryError { message: format!("General error occured for param: {}", param), code: "appRepositoryError002" })
     }
-    pub fn general_error_for_param_value(param: &str, value: &str) -> Self {
-        AppRepositoryError { message: format!("General error occured for param: {} value: {}", param, value), code: "appRepositoryError003" }
+    pub fn general_error_for_param_value(param: &str, value: &str) -> Box<Self> {
+        Box::new(AppRepositoryError { message: format!("General error occured for param: {} value: {}", param, value), code: "appRepositoryError003" })
     }
 }
 
-impl <'a> AppErrorData<'a> for AppRepositoryError {
-    fn get_message(&'a self) -> &'a str {
+impl AppGenericError for AppRepositoryError {
+    fn get_message(& self) -> & str {
         &self.message[..]
     }
 

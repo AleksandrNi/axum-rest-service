@@ -1,6 +1,9 @@
-use utils::error::app_error::{AppErrorData, AppGenericError};
+use std::ops::Deref;
+use utils::error::app_error::AppGenericError;
 use axum::{http::StatusCode, response::{IntoResponse, Response}, Json};
 use serde::Serialize;
+use utils::error::app_repository_error::AppRepositoryError;
+use utils::error::app_service_error::AppServiceError;
 
 #[derive(Serialize, Debug)]
 pub struct AppResponseError {
@@ -25,12 +28,12 @@ impl IntoResponse for AppResponseError {
     }
 }
 
-pub fn prepare_response<T>(result: Result<T, AppGenericError>) -> Result<Json<T>, AppResponseError> {
+pub fn prepare_response<T>(result: Result<T, Box<dyn AppGenericError>>) -> Result<Json<T>, AppResponseError> {
     match result {
         Ok(data) => Ok(Json(data)),
-        Err(err) => match err {
-            AppGenericError::Repository(e) => Err(AppResponseError::new(e.get_code(), e.get_message())),
-            AppGenericError::Service(e) => Err(AppResponseError::new(e.get_code(), e.get_message()))
+        Err(boxErr) => match boxErr.deref() {
+            AppRepositoryError => Err(AppResponseError::new(boxErr.get_code(), boxErr.get_message())),
+            AppServiceError => Err(AppResponseError::new(boxErr.get_code(), boxErr.get_message())),
         }
     }
 }
