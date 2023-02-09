@@ -9,7 +9,7 @@ pub async fn get_questions() -> Result<Vec<Question>, AppGenericError> {
     let mut tx = Tx::begin().await;
     match question_repository::get_questions(&mut tx).await {
         Ok(data) => {
-            Tx::commit(tx);
+            Tx::commit(tx).await;
             Ok(data)
         }
         Err(boxErr) => Err(boxErr)
@@ -20,7 +20,7 @@ pub async fn post_question(question: Question) -> Result<Question, AppGenericErr
     let mut tx = Tx::begin().await;
     match question_repository::post_question(&mut tx, question).await {
         Ok(data) => {
-            Tx::commit(tx);
+            Tx::commit(tx).await;
             Ok(data)
         }
         Err(boxErr) => Err(boxErr)
@@ -33,7 +33,7 @@ pub async fn get_question_by_id(
     let mut tx = Tx::begin().await;
     match question_repository::get_question_by_id(&mut tx, id).await {
         Ok(data) => {
-            Tx::commit(tx);
+            Tx::commit(tx).await;
             Ok(data)
         },
         Err(boxErr) => Err(boxErr)

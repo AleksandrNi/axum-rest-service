@@ -9,7 +9,7 @@ async fn init_connection() -> Pool<Postgres> {
     let db_url = env::var("DATABASE_URL").unwrap_or_else(|_| panic!("DATABASE_URL must be set!"));
 
     let pool = PgPoolOptions::new()
-        .max_connections(5)
+        .max_connections(100)
         .connect(&db_url)
         .await
         .unwrap_or_else(|_| {
