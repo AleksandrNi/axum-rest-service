@@ -1,4 +1,30 @@
-pub trait AppGenericError {
-    fn get_message(&self) -> &str;
-    fn get_code(&self) -> &'static str;
+pub trait AppGenericErrorTrait {
+    fn get_message(&self) -> String;
+    fn get_code(&self) -> String;
+}
+
+pub struct AppErrorBody {
+    message: String,
+    code: String,
+}
+
+impl AppErrorBody {
+    pub fn new (message: String, code: &str) -> Self {
+        AppErrorBody {message, code: code.to_owned()}
+    }
+}
+
+impl AppGenericErrorTrait for AppErrorBody {
+    fn get_message(&self) -> String {
+        self.message.to_owned()
+    }
+    fn get_code(&self) -> String {
+        self.code.to_owned()
+    }
+}
+
+pub enum AppGenericError {
+    Repository(AppErrorBody),
+    Service(AppErrorBody),
+    Web(AppErrorBody),
 }

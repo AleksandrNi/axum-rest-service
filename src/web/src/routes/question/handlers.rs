@@ -2,8 +2,6 @@ use service::question_service;
 use repository::domain::question::Question;
 
 use utils::error::app_repository_error::AppRepositoryError;
-use utils::error::app_service_error::AppServiceError;
-use utils::error::app_web_error::AppWebError;
 use utils::error::app_error::AppGenericError;
 use axum::{http::StatusCode, response::{IntoResponse, Response}, Json};
 use crate::utils::error::{AppResponseError, prepare_response};

@@ -1,34 +1,31 @@
-use crate::error::app_error::AppGenericError;
+use crate::error::app_error::{AppErrorBody, AppGenericError};
 
-
-const REPOSITORY_001: &str = "appServiceError001";
-const REPOSITORY_002: &str = "appServiceError002";
-const REPOSITORY_003: &str = "appServiceError003";
-
-#[derive(Debug)]
-pub struct AppServiceError {
-    message: String,
-    code: &'static str,
+// body
+fn general_error_body(err: String) -> AppErrorBody {
+    AppErrorBody::new(format!("General error occured: {}", err), "appServiceError001")
 }
 
-impl <'a> AppServiceError {
-    pub fn general_error(err: &str) -> Box<Self> {
-        Box::new(AppServiceError { message: format!("General error occured: {}", err), code:  REPOSITORY_001})
-    }
-    pub fn general_error_for_param(param: &str) -> Box<Self> {
-        Box::new(AppServiceError { message: format!("General error occured for param: {}", param), code: REPOSITORY_002 })
-    }
-    pub fn general_error_for_param_value(param: &str, value: &str) -> Box<Self> {
-        Box::new(AppServiceError { message: format!("General error occured for param: {} value: {}", param, value), code: REPOSITORY_003 })
-    }
+fn general_error_for_param_body(param: String) -> AppErrorBody {
+    AppErrorBody::new(format!("General error occured for param: {}", param), "appServiceError002")
 }
 
-impl AppGenericError for AppServiceError {
-    fn get_message(& self) -> & str {
-        &self.message[..]
+fn general_error_for_param_value_body(param: String, value: String) -> AppErrorBody {
+    AppErrorBody::new(format!("General error occured for param: {} value: {}", param, value), "appServiceError003")
+}
+
+
+pub struct AppServiceError;
+
+impl AppServiceError {
+    pub fn general_error(err: String) -> AppGenericError {
+        AppGenericError::Service(general_error_body(err))
     }
 
-    fn get_code(&self) -> &'static str {
-        self.code
+    pub fn general_error_for_param(param: String) -> AppGenericError {
+        AppGenericError::Service(general_error_for_param_body(param))
+    }
+
+    pub fn general_error_for_param_value(param: String, value: String) -> AppGenericError {
+        AppGenericError::Service(general_error_for_param_value_body(param, value))
     }
 }
