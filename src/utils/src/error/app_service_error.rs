@@ -13,6 +13,9 @@ fn general_error_for_param_value_body(param: String, value: String) -> AppErrorB
     AppErrorBody::new(format!("General error occured for param: {} value: {}", param, value), "appServiceError003")
 }
 
+fn entity_does_not_exists_for_param_value(param: String, value: String) -> AppErrorBody {
+    AppErrorBody::new(format!("Entity does not exist for param: {} value: {}", param, value), "appServiceError004")
+}
 
 pub struct AppServiceError;
 
@@ -27,5 +30,8 @@ impl AppServiceError {
 
     pub fn general_error_for_param_value(param: String, value: String) -> AppGenericError {
         AppGenericError::Service(general_error_for_param_value_body(param, value))
+    }
+    pub fn entity_does_not_exists_for_param_value(param: String, value: String) -> AppGenericError {
+        AppGenericError::Service(entity_does_not_exists_for_param_value(param, value))
     }
 }

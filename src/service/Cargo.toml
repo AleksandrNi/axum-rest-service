@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 utils = { path = "../utils" }
 repository = { path = "../repository" }
+serde = "1.0.152"

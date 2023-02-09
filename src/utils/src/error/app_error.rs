@@ -3,6 +3,7 @@ pub trait AppGenericErrorTrait {
     fn get_code(&self) -> String;
 }
 
+#[derive(Debug)]
 pub struct AppErrorBody {
     message: String,
     code: String,
@@ -23,6 +24,7 @@ impl AppGenericErrorTrait for AppErrorBody {
     }
 }
 
+#[derive(Debug)]
 pub enum AppGenericError {
     Repository(AppErrorBody),
     Service(AppErrorBody),

@@ -42,7 +42,7 @@ impl IntoResponse for AppResponseError {
 pub fn prepare_response<T>(result: Result<T, AppGenericError>) -> Result<Json<T>, AppResponseError> {
     match result {
         Ok(data) => Ok(Json(data)),
-        Err(genericError) => match genericError {
+        Err(generic_error) => match generic_error {
             AppGenericError::Repository(err) => Err(AppResponseError::new(StatusCode::INTERNAL_SERVER_ERROR, err.get_code(), err.get_message())),
             AppGenericError::Service(err) => Err(AppResponseError::new(StatusCode::INTERNAL_SERVER_ERROR, err.get_code(), err.get_message())),
             AppGenericError::Web(err) =>
