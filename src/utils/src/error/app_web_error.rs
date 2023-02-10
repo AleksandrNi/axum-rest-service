@@ -2,15 +2,15 @@ use crate::error::app_error::{AppErrorBody, AppGenericError};
 
 // body
 fn general_error_body(err: String) -> AppErrorBody {
-    AppErrorBody::new(format!("General error occured: {}", err), "appWebError001")
+    AppErrorBody::new(format!("General error occured: '{}'", err), "appWebError001")
 }
 
 fn general_error_for_param_body(param: String) -> AppErrorBody {
-    AppErrorBody::new(format!("General error occured for param: {}", param), "appWebError002")
+    AppErrorBody::new(format!("General error occured for param: '{}'", param), "appWebError002")
 }
 
 fn general_error_for_param_value_body(param: String, value: String) -> AppErrorBody {
-    AppErrorBody::new(format!("General error occured for param: {} value: {}", param, value), "appWebError003")
+    AppErrorBody::new(format!("General error occured for param: '{}' value: '{}'", param, value), "appWebError003")
 }
 
 

@@ -42,8 +42,8 @@ impl QuestionModel {
     pub fn set_content(&mut self, content: String) {
         self.content = content;
     }
-    pub fn set_tags(&mut self, tags: Vec<String>) {
-        self.tags = Some(tags);
+    pub fn set_tags(&mut self, tags: Option<Vec<String>>) {
+        self.tags = tags;
     }
 }
 

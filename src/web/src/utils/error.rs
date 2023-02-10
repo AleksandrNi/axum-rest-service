@@ -3,9 +3,6 @@ use utils::error::app_error::AppGenericError;
 use axum::{http::StatusCode, response::{IntoResponse, Response}, Json};
 use serde::Serialize;
 use serde_json::to_string;
-use utils::error::app_repository_error::AppRepositoryError;
-use utils::error::app_service_error::AppServiceError;
-use utils::error::app_web_error::AppWebError;
 
 pub struct AppResponseError {
     pub statusCode: StatusCode,
