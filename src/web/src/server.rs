@@ -11,8 +11,8 @@ pub async fn run() {
     let app =
         Router::new()
             .route("/", get(get_hello))
-            .merge(routes::question::routes::router().await);
-            // .route_layer(middleware::from_fn(auth::guard));
+            .merge(routes::question::routes::router().await)
+            .route_layer(middleware::from_fn(auth::guard));
 
     let adress = SocketAddr::from(get_address());
 

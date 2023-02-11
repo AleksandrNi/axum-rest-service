@@ -5,6 +5,7 @@ use tracing::info;
 use utils::core::db::get_connection;
 
 pub async fn run() {
+    info!("execute : initializing db migrations ...");
     // // Read migrations from a local folder: ./migrations
     // let m = Migrator::new(Path::new("./migrations/")).await
     //     .unwrap_or_else(|err| panic!("Migrator is not created: {}", err));
