@@ -1,4 +1,3 @@
-use crate::domain::from_pg_row::FromPgRow;
 use crate::domain::question::QuestionModel;
 use sqlx::postgres::PgRow;
 use sqlx::{Postgres, Row, Transaction};
@@ -31,7 +30,7 @@ pub async fn get_questions(tx: &mut Transaction<'static, Postgres>) -> Result<Ve
     match sqlx::query(QUERY_SELECT_QUESTIONS_WITH_LIMIT_AND_OFFSET)
         .bind(limit)
         .bind(offset)
-        .map(|row: PgRow| QuestionModel::from_pg_row(row))
+        .map(|row: PgRow| QuestionModel::from(row))
         .fetch_all(&mut *tx)
         // .fetch_all(&mut tx)
         .await {
@@ -49,7 +48,7 @@ pub async fn post_question(
         .bind(question.get_title())
         .bind(question.get_content())
         .bind(question.get_tags())
-        .map(|row: PgRow| QuestionModel::from_pg_row(row))
+        .map(|row: PgRow| QuestionModel::from(row))
         .fetch_one(&mut *tx)
         // .fetch_one(connection)
         .await {
@@ -63,7 +62,7 @@ pub async fn get_question_by_id(tx: &mut Transaction<'static, Postgres>, id: i32
 
     match sqlx::query(QUERY_SELECT_QUESTION_BY_ID)
         .bind(id)
-        .map(|row: PgRow| QuestionModel::from_pg_row(row))
+        .map(|row: PgRow| QuestionModel::from(row))
         .fetch_one(&mut *tx)
         // .fetch_one(connection)
         .await {
@@ -92,7 +91,7 @@ pub async fn patch_question(
         .bind(question.get_content())
         .bind(question.get_tags())
         .bind(question.get_id())
-        .map(|row: PgRow| QuestionModel::from_pg_row(row))
+        .map(|row: PgRow| QuestionModel::from(row))
         .fetch_one(&mut *tx)
         // .fetch_one(connection)
         .await {

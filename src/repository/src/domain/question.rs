@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use crate::domain::from_pg_row::FromPgRow;
 use sqlx::postgres::PgRow;
 use sqlx::Row;
 
@@ -47,13 +46,13 @@ impl QuestionModel {
     }
 }
 
-impl FromPgRow for QuestionModel {
-    fn from_pg_row(row: PgRow) -> Self {
+impl From<PgRow> for QuestionModel {
+    fn from(value: PgRow) -> Self {
         QuestionModel::new(
-            Some::<i32>(row.get("id")),
-            row.get("title"),
-            row.get("content"),
-            row.get("tags"),
+            Some::<i32>(value.get("id")),
+            value.get("title"),
+            value.get("content"),
+            value.get("tags"),
         )
     }
 }

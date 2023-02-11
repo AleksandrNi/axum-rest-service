@@ -195,13 +195,14 @@ checksum = "a4a4ddaa51a5bc52a6948f74c06d20aaaddb71924eab79b8c97a8c556e942d6a"
 
 [[package]]
 name = "bcrypt"
-version = "0.13.0"
+version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a7e7c93a3fb23b2fdde989b2c9ec4dd153063ec81f408507f84c090cd91c6641"
+checksum = "9df288bec72232f78c1ec5fe4e8f1d108aa0265476e93097593c803c8c02062a"
 dependencies = [
- "base64 0.13.1",
+ "base64 0.21.0",
  "blowfish",
  "getrandom",
+ "subtle",
  "zeroize",
 ]
 
@@ -1444,6 +1445,7 @@ name = "repository"
 version = "0.1.0"
 dependencies = [
  "api",
+ "chrono",
  "serde",
  "serde_json",
  "sqlx",
@@ -1773,6 +1775,7 @@ dependencies = [
 name = "service"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "repository",
  "serde",
  "utils",
@@ -2348,6 +2351,7 @@ dependencies = [
  "api",
  "async-trait",
  "axum",
+ "bcrypt",
  "chrono",
  "jsonwebtoken",
  "serde",
@@ -2502,7 +2506,6 @@ name = "web"
 version = "0.1.0"
 dependencies = [
  "axum",
- "bcrypt",
  "chrono",
  "dotenvy",
  "jsonwebtoken",

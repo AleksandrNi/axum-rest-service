@@ -13,3 +13,4 @@ sqlx = { version = "0.6.2", features = ["runtime-tokio-rustls", "postgres", "chr
 tokio = { version = "1.24.2", features = ["full"] }
 serde = { version = "1.0.152", features = ["derive"] }
 tracing = "0.1.37"
+chrono = "0.4.23"

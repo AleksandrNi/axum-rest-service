@@ -4,7 +4,7 @@ use jsonwebtoken::{decode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 use std::env;
 
-pub fn jwt_create() -> Result<String, StatusCode> {
+pub fn jwt_create() -> String {
     let mut now = chrono::Utc::now();
     let iat = now.timestamp() as usize;
     let expires_in = Duration::seconds(30);
@@ -14,11 +14,7 @@ pub fn jwt_create() -> Result<String, StatusCode> {
 
     let jwt_secret = get_jwt_secret();
     let key = EncodingKey::from_secret(jwt_secret.as_ref());
-    let token = jsonwebtoken::encode(&Header::default(), &claim, &key)
-        .map_err(|_err| StatusCode::INTERNAL_SERVER_ERROR)
-        .unwrap();
-
-    Ok(token)
+    jsonwebtoken::encode(&Header::default(), &claim, &key).unwrap()
 }
 
 pub fn jwt_verify(token: &str) -> Result<(), jsonwebtoken::errors::Error> {

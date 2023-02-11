@@ -10,9 +10,10 @@ use axum::routing::get;
 pub async fn run() {
     let app =
         Router::new()
-            .route("/", get(get_hello))
             .merge(routes::question::routes::router().await)
-            .route_layer(middleware::from_fn(auth::guard));
+            .route_layer(middleware::from_fn(auth::guard))
+            .route("/ping", get(ping))
+            .merge(routes::user::routes::router().await);
 
     let adress = SocketAddr::from(get_address());
 
@@ -22,6 +23,6 @@ pub async fn run() {
         .unwrap_or_else(|_| panic!("Server cannot launch."));
 }
 
-pub async fn get_hello() -> Result<String, StatusCode> {
-    Ok("hello world".to_owned())
+pub async fn ping() -> Result<String, StatusCode> {
+    Ok("service works well".to_owned())
 }

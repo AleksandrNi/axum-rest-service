@@ -18,12 +18,12 @@ pub async fn get_questions() -> Result<Json<Vec<QuestionResponse>>, AppResponseE
 
 pub async fn post_question(Json(question_request): Json<QuestionRequest>) -> Result<Json<QuestionResponse>, AppResponseError> {
     let question_dto = QuestionDto::from(question_request);
-    let result = transfom_result_dto_to_response(question_service::post_question(question_dto).await);
+    let result = transform_result_dto_to_response(question_service::post_question(question_dto).await);
     prepare_response(result)
 }
 
 pub async fn get_question_by_id(Path(id): Path<i32>) -> Result<Json<QuestionResponse>, AppResponseError> {
-    let result = transfom_result_dto_to_response(question_service::get_question_by_id(id).await);
+    let result = transform_result_dto_to_response(question_service::get_question_by_id(id).await);
     prepare_response(result)
 }
 
@@ -33,11 +33,11 @@ pub async fn delete_question_by_id(Path(id): Path<i32>) -> Result<Json<bool>, Ap
 
 pub async fn patch_question(Json(question_request): Json<QuestionRequest>) -> Result<Json<QuestionResponse>, AppResponseError> {
     let question_dto = QuestionDto::from(question_request);
-    let result = transfom_result_dto_to_response(question_service::patch_question(question_dto).await);
+    let result = transform_result_dto_to_response(question_service::patch_question(question_dto).await);
     prepare_response(result)
 }
 
-fn transfom_result_dto_to_response(result: Result<QuestionDto, AppGenericError>) -> Result<QuestionResponse, AppGenericError> {
+fn transform_result_dto_to_response(result: Result<QuestionDto, AppGenericError>) -> Result<QuestionResponse, AppGenericError> {
     match result {
         Ok(dto) => Ok(QuestionResponse::from(dto)),
         Err(err) => Err(err)
