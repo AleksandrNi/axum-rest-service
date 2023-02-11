@@ -1,9 +1,9 @@
 use axum::Router;
 use axum::routing::{post};
-use crate::routes::user::handlers::{create_user, login_user};
+use crate::routes::user::handlers::{user_create, user_login};
 
 pub async fn router() -> Router {
     Router::new()
-        .route("/user/create", post(create_user))
-        .route("/user/login", post(login_user))
+        .route("/user/create", post(user_create))
+        .route("/user/login", post(user_login))
 }

@@ -41,3 +41,9 @@ impl From<UserDto> for UserCreateResponse {
                                 value.get_token().as_ref().unwrap().to_owned())
     }
 }
+
+impl From<UserLoginRequest> for UserDto {
+    fn from(value: UserLoginRequest) -> Self {
+        UserDto::new(None, None, Some(value.email), Some(value.password), None, None)
+    }
+}

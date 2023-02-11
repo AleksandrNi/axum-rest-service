@@ -1,5 +1,5 @@
 use repository::domain::user::UserModel;
-use utils::core::hash::hash_password;
+use utils::core::hash::{hash_password, verify_password};
 use utils::core::jwt::jwt_create;
 use utils::error::app_error::AppGenericError;
 use utils::error::app_service_error::AppServiceError;
@@ -9,10 +9,10 @@ use utils::core::db::Tx;
 use utils::core::db::TxAsync;
 
 const PASSWORD_PARAM: &str = "password";
+const EMAIL_PARAM: &str = "email";
 
 pub async fn user_create(mut user_dto: UserDto) -> Result<UserDto, AppGenericError> {
-
-    let hash = if let Some(password ) = user_dto.get_password(){
+    let hash = if let Some(password) = user_dto.get_password() {
         hash_password(&password[..]).map_err(|err| AppServiceError::general_error(err))?
     } else {
         return Err(AppServiceError::parameter_must_be_provided(PASSWORD_PARAM.to_owned()));
@@ -29,7 +29,46 @@ pub async fn user_create(mut user_dto: UserDto) -> Result<UserDto, AppGenericErr
         Ok(data) => {
             Tx::commit(tx).await;
             Ok(UserDto::from(data))
-        },
+        }
         Err(err) => Err(err)
     }
+}
+
+pub async fn user_login(user_dto: UserDto) -> Result<UserDto, AppGenericError> {
+    let passed_password = if let Some(passed_password) = &user_dto.password {
+        passed_password.to_owned()
+    } else {
+        return Err(AppServiceError::parameter_must_be_provided(PASSWORD_PARAM.to_owned()));
+    };
+
+    if let None = &user_dto.email {
+        return Err(AppServiceError::parameter_must_be_provided(EMAIL_PARAM.to_owned()));
+    }
+
+    let mut tx = Tx::begin().await;
+    let mut loaded_user_dto = match user_repository::user_load(&mut tx, UserModel::from(user_dto)).await {
+        Ok(data) => {
+            // Tx::commit(tx).await;
+            Ok(UserDto::from(data))
+        }
+        Err(err) => Err(err)
+    }.unwrap();
+
+    let stored_password_hash = &loaded_user_dto.password.unwrap()[..];
+    let passed_password_hash = hash_password(&passed_password[..]).unwrap();
+    if !passed_password_hash.ne(stored_password_hash) {
+        return Err(AppServiceError::relation_between_2_parameters_does_not_exist(EMAIL_PARAM.to_owned(), PASSWORD_PARAM.to_owned()));
+    }
+
+    loaded_user_dto.token = Some(jwt_create());
+    loaded_user_dto.password = Some(passed_password);
+    let updated_user = match user_repository::user_update(&mut tx, UserModel::from(loaded_user_dto)).await {
+        Ok(data) => {
+            Tx::commit(tx).await;
+            Ok(UserDto::from(data))
+        }
+        Err(err) => Err(err)
+    }.unwrap();
+
+    Ok(updated_user)
 }

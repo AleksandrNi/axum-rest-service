@@ -7,14 +7,16 @@ use crate::utils::error::{AppResponseError, prepare_response};
 use service::user::user_service;
 
 
-pub async fn create_user(Json(user_create_request): Json<UserCreateRequest>) -> Result<Json<UserCreateResponse>, AppResponseError> {
+pub async fn user_create(Json(user_create_request): Json<UserCreateRequest>) -> Result<Json<UserCreateResponse>, AppResponseError> {
     let result = transform_result_dto_to_response(
         user_service::user_create(UserDto::from(user_create_request)).await);
     prepare_response(result)
 }
 
-pub async fn login_user(Json(user_create_response): Json<UserLoginRequest>) -> Result<Json<UserCreateResponse>, AppResponseError> {
-    Ok(Json(UserCreateResponse::new(1,"test".to_owned(),  "1234".to_owned())))
+pub async fn user_login(Json(user_login_request): Json<UserLoginRequest>) -> Result<Json<UserCreateResponse>, AppResponseError> {
+    let result = transform_result_dto_to_response(
+        user_service::user_login(UserDto::from(user_login_request)).await);
+    prepare_response(result)
 }
 
 fn transform_result_dto_to_response(result: Result<UserDto, AppGenericError>) -> Result<UserCreateResponse, AppGenericError> {

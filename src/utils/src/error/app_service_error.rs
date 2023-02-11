@@ -20,6 +20,9 @@ fn entity_does_not_exists_for_param_value(param: String, value: String) -> AppEr
 fn parameter_must_be_provided(param: String) -> AppErrorBody {
     AppErrorBody::new(format!("Parameter must be provided: '{}'", param), "appServiceError005")
 }
+fn relation_between_2_parameters_does_not_exist(param1: String, param2: String) -> AppErrorBody {
+    AppErrorBody::new(format!("Relation between '{}' and '{}' does not exist.", param1, param2), "appServiceError005")
+}
 
 pub struct AppServiceError;
 
@@ -41,5 +44,8 @@ impl AppServiceError {
     pub fn parameter_must_be_provided(param: String) -> AppGenericError {
         AppGenericError::Service(parameter_must_be_provided(param))
 
+    }
+    pub fn relation_between_2_parameters_does_not_exist(param1: String, param2: String) -> AppGenericError {
+        AppGenericError::Service(relation_between_2_parameters_does_not_exist(param1, param2))
     }
 }
