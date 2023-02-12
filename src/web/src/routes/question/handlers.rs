@@ -1,14 +1,10 @@
-use std::result;
-use repository::domain::question::QuestionModel;
 use utils::error::app_error::AppGenericError;
-use axum::{http::StatusCode, response::{IntoResponse, Response}, Json};
+use axum::Json;
 use axum::extract::Path;
-use tracing::field::debug;
 use service::question::question_dto::QuestionDto;
 use crate::utils::error::AppResponseError;
 use crate::utils::error::prepare_response;
 use service::question::question_service;
-use crate::routes::question;
 use crate::routes::question::dto::{QuestionRequest, QuestionResponse};
 
 pub async fn get_questions() -> Result<Json<Vec<QuestionResponse>>, AppResponseError> {

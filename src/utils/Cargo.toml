@@ -7,13 +7,16 @@ edition = "2021"
 
 [dependencies]
 api = { path = "../api" }
-tokio = { version = "1.23.1", features = ["full"]}
+tokio = { version = "1.23", features = ["full"]}
 sqlx = { version = "0.6.2", features = ["runtime-tokio-rustls", "postgres", "chrono", "uuid", "json"] }
 axum = { version = "0.6.2", features = ["headers", "macros"] }
 jsonwebtoken = "8.2.0"
-serde = { version = "1.0.152", features = ["derive"] }
-tracing = "0.1.37"
+serde = { version = "1.0", features = ["derive"] }
+tracing = "0.1"
 tracing-subscriber = { version = "0.3.15", features = ["env-filter"]}
-chrono = "0.4.23"
-async-trait = "0.1.64"
+chrono = "0.4"
+async-trait = "0.1"
 bcrypt = "0.14"
+redis = { version = "0.22", default-features = false, features = ["tokio-comp"] }
+bb8 = "0.8"
+bb8-redis = "0.12"

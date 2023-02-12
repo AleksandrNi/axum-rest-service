@@ -19,5 +19,15 @@ services:
       retries: 5
       start_period: 5s
 
+  redis:
+    image: redis:alpine
+    restart: always
+    container_name: redis
+    command: --port 6379
+    ports:
+      - 6379:6379
+    expose:
+      - 6379
+
 volumes:
   db-axum-data:

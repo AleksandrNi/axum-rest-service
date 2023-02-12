@@ -21,7 +21,7 @@ pub async fn get_questions() -> Result<Vec<QuestionDto>, AppGenericError> {
                 .collect();
             Ok(result)
         }
-        Err(boxErr) => Err(boxErr)
+        Err(err) => Err(err)
     }
 }
 
@@ -33,7 +33,7 @@ pub async fn post_question(question: QuestionDto) -> Result<QuestionDto, AppGene
             Tx::commit(tx).await;
             Ok(QuestionDto::from(data))
         }
-        Err(boxErr) => Err(boxErr)
+        Err(err) => Err(err)
     }
 }
 
@@ -46,7 +46,7 @@ pub async fn get_question_by_id(
             Tx::commit(tx).await;
             Ok(QuestionDto::from(data))
         }
-        Err(boxErr) => Err(boxErr)
+        Err(err) => Err(err)
     }
 }
 
@@ -62,7 +62,7 @@ pub async fn delete_question_by_id(id: i32) -> Result<bool, AppGenericError> {
             Tx::commit(tx).await;
             Ok(true)
         }
-        Err(boxErr) => Err(boxErr)
+        Err(err) => Err(err)
     }
 }
 
@@ -97,6 +97,6 @@ pub async fn patch_question(question: QuestionDto) -> Result<QuestionDto, AppGen
             Tx::commit(tx).await;
             Ok(QuestionDto::from(data))
         }
-        Err(boxErr) => Err(boxErr)
+        Err(err) => Err(err)
     }
 }

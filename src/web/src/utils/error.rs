@@ -2,17 +2,16 @@ use utils::error::app_error::AppGenericErrorTrait;
 use utils::error::app_error::AppGenericError;
 use axum::{http::StatusCode, response::{IntoResponse, Response}, Json};
 use serde::Serialize;
-use serde_json::to_string;
 
 pub struct AppResponseError {
-    pub statusCode: StatusCode,
+    pub status_code: StatusCode,
     pub message: String,
     pub code: String,
 }
 
 impl AppResponseError {
-    pub fn new(statusCode: StatusCode, code: String, message: String) -> Self {
-        AppResponseError { statusCode, code, message }
+    pub fn new(status_code: StatusCode, code: String, message: String) -> Self {
+        AppResponseError { status_code, code, message }
     }
 }
 
@@ -23,15 +22,15 @@ pub struct AppResponseErrorBody {
 }
 
 impl AppResponseErrorBody {
-    pub fn fromAppResponseError(err: AppResponseError) -> AppResponseErrorBody {
+    pub fn from_app_response_error(err: AppResponseError) -> AppResponseErrorBody {
         AppResponseErrorBody { message: err.message, code: err.code }
     }
 }
 
 impl IntoResponse for AppResponseError {
     fn into_response(self) -> Response {
-        (self.statusCode,
-         Json(AppResponseErrorBody::fromAppResponseError(self))
+        (self.status_code,
+         Json(AppResponseErrorBody::from_app_response_error(self))
         ).into_response() as Response
     }
 }

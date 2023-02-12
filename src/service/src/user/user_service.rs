@@ -18,10 +18,7 @@ pub async fn user_create(mut user_dto: UserDto) -> Result<UserDto, AppGenericErr
         return Err(AppServiceError::parameter_must_be_provided(PASSWORD_PARAM.to_owned()));
     };
 
-    let jwt_token = jwt_create();
-
     user_dto.password = Some(hash);
-    user_dto.token = Some(jwt_token);
     user_dto.deleted_at = None;
 
     let mut tx = Tx::begin().await;
@@ -55,13 +52,12 @@ pub async fn user_login(user_dto: UserDto) -> Result<UserDto, AppGenericError> {
     }.unwrap();
 
     let stored_password_hash = &loaded_user_dto.password.unwrap()[..];
-    let passed_password_hash = hash_password(&passed_password[..]).unwrap();
-    if !passed_password_hash.ne(stored_password_hash) {
+
+    if !verify_password(passed_password.clone(), stored_password_hash).unwrap() {
         return Err(AppServiceError::relation_between_2_parameters_does_not_exist(EMAIL_PARAM.to_owned(), PASSWORD_PARAM.to_owned()));
     }
 
-    loaded_user_dto.token = Some(jwt_create());
-    loaded_user_dto.password = Some(passed_password);
+    loaded_user_dto.password = Some(stored_password_hash.to_owned());
     let updated_user = match user_repository::user_update(&mut tx, UserModel::from(loaded_user_dto)).await {
         Ok(data) => {
             Tx::commit(tx).await;
@@ -71,4 +67,22 @@ pub async fn user_login(user_dto: UserDto) -> Result<UserDto, AppGenericError> {
     }.unwrap();
 
     Ok(updated_user)
+}
+
+pub async fn user_load(email: String) -> Result<UserDto, AppGenericError> {
+    let mut tx = Tx::begin().await;
+    let user_dto = UserDto {
+        id: None,
+        name: None,
+        email: Some(email),
+        password: None,
+        deleted_at: None,
+    };
+    match user_repository::user_load(&mut tx, UserModel::from(user_dto)).await {
+        Ok(data) => {
+            Tx::commit(tx).await;
+            Ok(UserDto::from(data))
+        }
+        Err(err) => Err(err)
+    }
 }

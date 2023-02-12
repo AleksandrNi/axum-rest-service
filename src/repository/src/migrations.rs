@@ -1,6 +1,3 @@
-use std::result;
-// use std::path::Path;
-// use sqlx::migrate::Migrator;
 use tracing::info;
 use utils::core::db::get_connection;
 
