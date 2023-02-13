@@ -5,7 +5,7 @@ services:
     image: postgres:latest
     volumes:
       - db-axum-data:/var/lib/postgresql/data
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+#      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       POSTGRES_DB: axum_db
       POSTGRES_USER: postgres
