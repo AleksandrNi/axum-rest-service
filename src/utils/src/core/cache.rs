@@ -59,12 +59,20 @@ pub async fn get_connection() -> Result<PooledConnection<'static,RedisConnection
 pub async fn set_key_value(key: &str, value: &str) {
     let mut connection = get_connection().await.unwrap();
     let result: String = connection.set(key, value).await.unwrap();
-    info!("stored data = {}", result);
 }
 
 pub async fn get_key(key: &str) -> Option<String> {
     let mut connection = get_connection().await.unwrap();
     let result: Option<String> = match connection.get(key).await {
+        Ok(data) => Some(data),
+        Err(err) => None
+    };
+    result
+}
+
+pub async fn del_key(key: &str) -> Option<i32> {
+    let mut connection = get_connection().await.unwrap();
+    let result: Option<i32> = match connection.del::<&str, i32>(key).await {
         Ok(data) => Some(data),
         Err(err) => None
     };

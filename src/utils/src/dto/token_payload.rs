@@ -9,7 +9,7 @@ impl TokenPayload {
 }
 
 impl TokenPayload {
-    pub fn get_email(&self) -> u32 {
+    pub fn get_user_id(&self) -> u32 {
         self.user_id
     }
 }

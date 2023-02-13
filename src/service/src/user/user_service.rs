@@ -43,7 +43,7 @@ pub async fn user_login(user_dto: UserDto) -> Result<UserDto, AppGenericError> {
     }
 
     let mut tx = Tx::begin().await;
-    let mut loaded_user_dto = match user_repository::user_load(&mut tx, UserModel::from(user_dto)).await {
+    let mut loaded_user_dto = match user_repository::user_load_by_email(&mut tx, UserModel::from(user_dto)).await {
         Ok(data) => {
             // Tx::commit(tx).await;
             Ok(UserDto::from(data))
@@ -69,7 +69,7 @@ pub async fn user_login(user_dto: UserDto) -> Result<UserDto, AppGenericError> {
     Ok(updated_user)
 }
 
-pub async fn user_load(email: String) -> Result<UserDto, AppGenericError> {
+pub async fn user_load_by_email(email: String) -> Result<UserDto, AppGenericError> {
     let mut tx = Tx::begin().await;
     let user_dto = UserDto {
         id: None,
@@ -78,7 +78,25 @@ pub async fn user_load(email: String) -> Result<UserDto, AppGenericError> {
         password: None,
         deleted_at: None,
     };
-    match user_repository::user_load(&mut tx, UserModel::from(user_dto)).await {
+    match user_repository::user_load_by_email(&mut tx, UserModel::from(user_dto)).await {
+        Ok(data) => {
+            Tx::commit(tx).await;
+            Ok(UserDto::from(data))
+        }
+        Err(err) => Err(err)
+    }
+}
+
+pub async fn user_load_by_id(id: u32) -> Result<UserDto, AppGenericError> {
+    let mut tx = Tx::begin().await;
+    let user_dto = UserDto {
+        id: Some(id),
+        name: None,
+        email: None,
+        password: None,
+        deleted_at: None,
+    };
+    match user_repository::user_load_by_id(&mut tx, UserModel::from(user_dto)).await {
         Ok(data) => {
             Tx::commit(tx).await;
             Ok(UserDto::from(data))

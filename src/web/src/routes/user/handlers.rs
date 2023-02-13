@@ -5,7 +5,7 @@ use utils::core::jwt;
 use crate::routes::user::dto::{UserCreateRequest, UserCreateResponse, UserLoginRequest};
 use crate::utils::error::{AppResponseError, prepare_response};
 use service::user::user_service;
-use crate::utils::user::cache_user_data;
+use crate::utils::user::cache_refresh_user_data;
 
 
 pub async fn user_create(Json(user_create_request): Json<UserCreateRequest>) -> Result<Json<UserCreateResponse>, AppResponseError> {
@@ -26,7 +26,7 @@ async fn transform_result_dto_to_response(result: Result<UserDto, AppGenericErro
         Ok(dto) => {
             let mut response = UserCreateResponse::from(dto);
             let token = jwt::jwt_create(response.get_id());
-            cache_user_data(response.get_id(), &token[..]).await;
+            cache_refresh_user_data(response.get_id(), &token[..]).await;
             response.set_token(token);
             Ok(response)
         },
